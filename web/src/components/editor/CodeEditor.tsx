@@ -45,7 +45,7 @@ export function CodeEditor({ value, onChange, onMount, readOnly = false }: CodeE
 
   return (
     <Editor
-      height="500px"
+      height="100%"
       defaultLanguage="typescript"
       value={value}
       onChange={(value) => onChange(value || '')}

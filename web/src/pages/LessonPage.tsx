@@ -20,6 +20,7 @@ export function LessonPage() {
   const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
   const [isRunning, setIsRunning] = useState(false);
   const [runResult, setRunResult] = useState<RunResult | null>(null);
+  const [activeTab, setActiveTab] = useState<'content' | 'practice'>('content');
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const { markComplete, getLessonProgress, saveCode } = useProgress();
 
@@ -102,12 +103,12 @@ export function LessonPage() {
     <div className="flex h-screen bg-gray-50">
       <Sidebar />
       
-      <main className="flex-1 overflow-y-auto">
-        <div className="container mx-auto px-4 py-8">
+      <main className="flex-1 overflow-hidden flex flex-col">
+        <div className="container mx-auto px-4 py-6">
           <h1 className="text-3xl font-bold mb-4">
             {lesson.number}. {lesson.title}
           </h1>
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex justify-between items-center mb-6">
             <p className="text-gray-600">{lesson.description}</p>
             <button
               onClick={() => {
@@ -125,84 +126,124 @@ export function LessonPage() {
             </button>
           </div>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* README Section */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-xl font-semibold mb-4">학습 내용</h2>
+          {/* Tab Navigation */}
+          <div className="flex border-b border-gray-300 mb-6">
+            <button
+              onClick={() => setActiveTab('content')}
+              className={`px-6 py-3 font-semibold transition-all ${
+                activeTab === 'content'
+                  ? 'text-blue-600 border-b-2 border-blue-600'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              📖 학습 내용
+            </button>
+            <button
+              onClick={() => setActiveTab('practice')}
+              className={`px-6 py-3 font-semibold transition-all ${
+                activeTab === 'practice'
+                  ? 'text-blue-600 border-b-2 border-blue-600'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              💻 실습 및 실행
+            </button>
+          </div>
+        </div>
+
+        {/* Tab Content */}
+        <div className="flex-1 overflow-hidden container mx-auto px-4 pb-6">
+          {/* Content Tab */}
+          {activeTab === 'content' && (
+            <div className="h-full overflow-y-auto bg-white rounded-lg shadow p-8">
               <LessonContent content={lesson.readme} />
             </div>
+          )}
 
-            {/* Code Section */}
-            <div className="bg-white rounded-lg shadow">
-              <div className="border-b border-gray-200 px-4 py-3 flex justify-between items-center">
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => {
-                      setCode(lesson.exercise);
-                      setShowSolution(false);
-                    }}
-                    className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                      !showSolution
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'text-gray-600 hover:bg-gray-100'
-                    }`}
-                  >
-                    Exercise
-                  </button>
-                  <button
-                    onClick={() => {
-                      setCode(lesson.solution);
-                      setShowSolution(true);
-                    }}
-                    className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                      showSolution
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'text-gray-600 hover:bg-gray-100'
-                    }`}
-                  >
-                    Solution
-                  </button>
+          {/* Practice Tab */}
+          {activeTab === 'practice' && (
+            <div className="h-full flex flex-col gap-4">
+              {/* Code Editor Section */}
+              <div className="flex-[3] bg-white rounded-lg shadow overflow-hidden flex flex-col">
+                <div className="border-b border-gray-200 px-4 py-3 flex justify-between items-center flex-shrink-0">
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => {
+                        setCode(lesson.exercise);
+                        setShowSolution(false);
+                      }}
+                      className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                        !showSolution
+                          ? 'bg-blue-100 text-blue-700'
+                          : 'text-gray-600 hover:bg-gray-100'
+                      }`}
+                    >
+                      Exercise
+                    </button>
+                    <button
+                      onClick={() => {
+                        setCode(lesson.solution);
+                        setShowSolution(true);
+                      }}
+                      className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                        showSolution
+                          ? 'bg-blue-100 text-blue-700'
+                          : 'text-gray-600 hover:bg-gray-100'
+                      }`}
+                    >
+                      Solution
+                    </button>
+                  </div>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={handleRunCode}
+                      disabled={isRunning}
+                      className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isRunning ? 'Running...' : 'Run'}
+                    </button>
+                    <button
+                      onClick={() => setCode(showSolution ? lesson.solution : lesson.exercise)}
+                      className="px-3 py-1 text-sm text-gray-600 hover:text-gray-900"
+                    >
+                      Reset
+                    </button>
+                  </div>
                 </div>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={handleRunCode}
-                    disabled={isRunning}
-                    className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isRunning ? 'Running...' : 'Run'}
-                  </button>
-                  <button
-                    onClick={() => setCode(showSolution ? lesson.solution : lesson.exercise)}
-                    className="px-3 py-1 text-sm text-gray-600 hover:text-gray-900"
-                  >
-                    Reset
-                  </button>
+                <div className="flex-1 p-4">
+                  <CodeEditor
+                    value={code}
+                    onChange={setCode}
+                    onMount={(editor) => setEditor(editor)}
+                    readOnly={showSolution}
+                  />
                 </div>
               </div>
-              <div className="p-4">
-                <CodeEditor
-                  value={code}
-                  onChange={setCode}
-                  onMount={(editor) => setEditor(editor)}
-                  readOnly={showSolution}
-                />
+
+              {/* Type Errors Section */}
+              <div className="flex-1 min-h-0">
+                <TypeErrorsPanel editor={editor} />
               </div>
-            </div>
-          </div>
 
-          {/* Type Errors Section */}
-          <div className="mt-6">
-            <TypeErrorsPanel editor={editor} />
-          </div>
-
-          {/* Console Output Section */}
-          {runResult && (
-            <div className="mt-6">
-              <ConsoleOutput
-                logs={runResult.logs}
-                error={runResult.error}
-                onClear={() => setRunResult(null)}
-              />
+              {/* Console Output Section */}
+              <div className="flex-1 min-h-0">
+                {runResult ? (
+                  <ConsoleOutput
+                    logs={runResult.logs}
+                    error={runResult.error}
+                    onClear={() => setRunResult(null)}
+                  />
+                ) : (
+                  <div className="h-full bg-gray-900 text-gray-100 font-mono text-sm rounded-lg overflow-hidden">
+                    <div className="px-4 py-2 border-b border-gray-700">
+                      <span className="text-gray-400 font-semibold">Console Output</span>
+                    </div>
+                    <div className="p-4">
+                      <span className="text-gray-500">실행 결과가 여기에 표시됩니다...</span>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>

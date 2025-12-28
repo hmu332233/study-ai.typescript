@@ -8,8 +8,8 @@ interface ConsoleOutputProps {
 
 export function ConsoleOutput({ logs, error, onClear }: ConsoleOutputProps) {
   return (
-    <div className="bg-gray-900 text-gray-100 font-mono text-sm rounded-lg overflow-hidden">
-      <div className="flex justify-between items-center px-4 py-2 border-b border-gray-700">
+    <div className="h-full bg-gray-900 text-gray-100 font-mono text-sm rounded-lg overflow-hidden flex flex-col">
+      <div className="flex justify-between items-center px-4 py-2 border-b border-gray-700 flex-shrink-0">
         <span className="text-gray-400 font-semibold">Console Output</span>
         <button 
           onClick={onClear}
@@ -19,7 +19,7 @@ export function ConsoleOutput({ logs, error, onClear }: ConsoleOutputProps) {
         </button>
       </div>
       
-      <div className="p-4 max-h-64 overflow-y-auto">
+      <div className="p-4 overflow-y-auto flex-1">
         {logs.length === 0 && !error && (
           <span className="text-gray-500">
             실행 결과가 여기에 표시됩니다...
