@@ -1,73 +1,47 @@
-# React + TypeScript + Vite
+# TypeScript Classroom Web
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+TypeScript 학습을 위한 인터랙티브 웹 플랫폼입니다. `lessons/` 디렉토리에 정의된 커리큘럼을 브라우저에서 직접 실습하고 타입 에러를 확인할 수 있는 환경을 제공합니다.
 
-Currently, two official plugins are available:
+## 주요 기능
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **인터랙티브 에디터**: Monaco Editor를 사용하여 브라우저에서 직접 TypeScript 코드를 작성합니다.
+- **실시간 타입 체크**: 코드 작성 시 발생하는 TypeScript 타입 에러를 실시간으로 확인합니다.
+- **학습 가이드**: 각 단계별 학습 목표와 설명(README)을 에디터 옆에서 바로 읽으며 실습합니다.
+- **콘솔 출력**: `console.log` 결과를 웹 UI에서 즉시 확인합니다.
 
-## React Compiler
+## 기술 스택
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Framework**: React 19 (Vite)
+- **Styling**: Tailwind CSS
+- **Editor**: Monaco Editor (@monaco-editor/react)
+- **Markdown**: react-markdown (rehype-highlight, remark-gfm)
+- **Routing**: React Router 7
 
-## Expanding the ESLint configuration
+## 시작하기
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+`web` 디렉토리 내에서 다음 명령어를 실행합니다.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+```bash
+# 의존성 설치
+pnpm install
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# 개발 서버 실행
+pnpm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+브라우저에서 `http://localhost:5173`에 접속하여 학습을 시작하세요.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 학습 구조 연동
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+웹 플랫폼은 프로젝트 루트의 `lessons/` 폴더 구조를 기반으로 작동합니다.
+
+1. **Lesson 리스트**: `lessons/` 내의 01~04 단계별 폴더를 자동으로 로드합니다.
+2. **콘텐츠 로드**:
+   - `README.md`: 학습 설명 영역에 표시됩니다.
+   - `exercise.ts`: 초기 편집기 코드로 설정됩니다.
+   - `solution.ts`: 정답 확인 시 참조됩니다.
+
+## 관련 문서
+
+- [전체 프로젝트 커리큘럼](../lessons/README.md)
+- [플랫폼 개발 계획](../context/PLATFORM_PLAN.md)
