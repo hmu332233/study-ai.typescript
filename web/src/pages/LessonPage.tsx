@@ -162,9 +162,9 @@ export function LessonPage() {
 
           {/* Practice Tab */}
           {activeTab === 'practice' && (
-            <div className="h-full flex flex-col gap-4">
-              {/* Code Editor Section */}
-              <div className="flex-[3] bg-white rounded-lg shadow overflow-hidden flex flex-col">
+            <div className="h-full grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-4">
+              {/* Left Column: Code Editor (full height) */}
+              <div className="bg-white rounded-lg shadow overflow-hidden flex flex-col">
                 <div className="border-b border-gray-200 px-4 py-3 flex justify-between items-center flex-shrink-0">
                   <div className="flex space-x-2">
                     <button
@@ -220,29 +220,32 @@ export function LessonPage() {
                 </div>
               </div>
 
-              {/* Type Errors Section */}
-              <div className="flex-1 min-h-0">
-                <TypeErrorsPanel editor={editor} />
-              </div>
+              {/* Right Column: Type Errors + Console (Flexbox) */}
+              <div className="flex flex-col gap-4 overflow-y-auto">
+                {/* Type Errors Panel - 컨텐츠 크기에 맞춤 (최대 40%) */}
+                <div className="flex-shrink-0 max-h-[40%]">
+                  <TypeErrorsPanel editor={editor} />
+                </div>
 
-              {/* Console Output Section */}
-              <div className="flex-1 min-h-0">
-                {runResult ? (
-                  <ConsoleOutput
-                    logs={runResult.logs}
-                    error={runResult.error}
-                    onClear={() => setRunResult(null)}
-                  />
-                ) : (
-                  <div className="h-full bg-gray-900 text-gray-100 font-mono text-sm rounded-lg overflow-hidden">
-                    <div className="px-4 py-2 border-b border-gray-700">
-                      <span className="text-gray-400 font-semibold">Console Output</span>
+                {/* Console Output - 나머지 공간 (최소 200px) */}
+                <div className="flex-1 min-h-[200px]">
+                  {runResult ? (
+                    <ConsoleOutput
+                      logs={runResult.logs}
+                      error={runResult.error}
+                      onClear={() => setRunResult(null)}
+                    />
+                  ) : (
+                    <div className="h-full bg-gray-900 text-gray-100 font-mono text-sm rounded-lg overflow-hidden flex flex-col">
+                      <div className="px-4 py-2 border-b border-gray-700 flex-shrink-0">
+                        <span className="text-gray-400 font-semibold">Console Output</span>
+                      </div>
+                      <div className="p-4 flex-1">
+                        <span className="text-gray-500">실행 결과가 여기에 표시됩니다...</span>
+                      </div>
                     </div>
-                    <div className="p-4">
-                      <span className="text-gray-500">실행 결과가 여기에 표시됩니다...</span>
-                    </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             </div>
           )}
